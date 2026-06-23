@@ -6,14 +6,14 @@ declare (strict_types=1);
 namespace app\adminapi\controller;
 
 use think\App;
-use app\common\controller\BaseAdminController;
+use app\common\controller\BaseAdminController as newBaseAdminController;
 
 /**
  * 管理元控制器基类
  * Class BaseAdminController
  * @package app\adminapi\controller
- */
-class BaseAdminController extends BaseAdminController
+ */  
+class BaseAdminController extends newBaseAdminController
 {
     protected int $adminId = 0;
     protected array $adminInfo = [];
