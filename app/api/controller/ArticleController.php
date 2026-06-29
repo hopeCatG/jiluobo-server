@@ -17,7 +17,7 @@ use think\facade\Db;
 class ArticleController extends BaseApiController
 {
 
-    public array $notNeedLogin = ['lists', 'cate', 'detail','continentsData'];
+    public array $notNeedLogin = ['lists', 'cate', 'detail','continentsData','mapLists'];
 
 
     /**
@@ -136,7 +136,7 @@ class ArticleController extends BaseApiController
     // 按 article_cate_id 分组子类，并挂载 offices
     $subGrouped = [];
     foreach ($subCategories as $sub) {
-        $sub['offices'] = $officesGrouped[$sub['id']] ?? 0;
+        $sub['offices'] = Db::name('article_city') -> where('region_id',$sub['id']) -> count();
         $subGrouped[$sub['article_cate_id']][] = $sub;
     }
 
@@ -148,5 +148,18 @@ class ArticleController extends BaseApiController
     return $this->data($continents);
 }
 
+    public function mapLists()
+    {
+        $lists = Db::name('article_city')
+            ->alias('ac')
+            ->join('article_cate acate', 'ac.cid = acate.id')
+            ->join('article_subcate subcate', 'ac.region_id = subcate.id')
+            ->field('ac.*, acate.code as continent, subcate.code as country')
+            ->select()
+            ->toArray();
 
+        return $this->data([
+            'lists' => $lists,
+        ]);
+    }
 }
